@@ -1,4 +1,4 @@
 streamlit
 qrcode==7.4.2
 pyzbar==0.1.9
-pillow=
+pillow
