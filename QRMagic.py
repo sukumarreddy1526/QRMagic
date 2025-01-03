@@ -1,7 +1,6 @@
 import streamlit as st
 import qrcode
-from pyzbar.pyzbar import decode
-from PIL import Image, ImageDraw
+from PIL import Image
 import io
 
 # QR Code Generator with Styling
@@ -17,12 +16,12 @@ def generate_qr_code(data, color, bg_color, error_correction):
     img = qr.make_image(fill_color=color, back_color=bg_color).convert("RGB")
     return img
 
-# QR Code Decoder
+# QR Code Decoder using Pillow and qrcode
 def decode_qr_code(image):
-    decoded_objects = decode(image)
-    if not decoded_objects:
+    qr_code = qrcode.decode(image)
+    if not qr_code:
         return "No QR code detected."
-    return [obj.data.decode("utf-8") for obj in decoded_objects]
+    return [obj.data.decode("utf-8") for obj in qr_code]
 
 # QR Code Analyzer
 def analyze_qr_code(qr_code_data):
