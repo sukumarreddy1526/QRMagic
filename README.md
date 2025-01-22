@@ -36,5 +36,5 @@
 ### Setup
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-username/QRMagic.git
+   git clone https://github.com/sukumarreddy1526/QRMagic.git
    cd QRMagic
