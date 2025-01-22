@@ -1,4 +1,4 @@
 streamlit
-qrcode==7.4.2
+qrcode[pil]
+pyzbar
 pillow
-opencv-python
