@@ -3,6 +3,9 @@ import qrcode
 from pyzbar.pyzbar import decode
 from PIL import Image
 import io
+import requests
+import base64
+from PIL import Image
 
 # QR Code Generator with Styling
 def generate_qr_code(data, color, bg_color, error_correction):
@@ -18,11 +21,20 @@ def generate_qr_code(data, color, bg_color, error_correction):
     return img
 
 # QR Code Decoder using pyzbar
-def decode_qr_code(image):
-    decoded_objects = decode(image)
-    if not decoded_objects:
-        return "No QR code detected."
-    return [obj.data.decode("utf-8") for obj in decoded_objects]
+def decode_qr_code_with_api(image):
+    buffered = io.BytesIO()
+    image.save(buffered, format="PNG")
+    img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+    
+    response = requests.post(
+        "https://api.qrserver.com/v1/read-qr-code/",
+        files={"file": buffered.getvalue()},
+    )
+    if response.status_code == 200:
+        result = response.json()
+        return result[0]["symbol"][0]["data"] if result[0]["symbol"] else "No QR code detected."
+    else:
+        return "Error decoding QR code."
 
 # QR Code Analyzer
 def analyze_qr_code(qr_code_data):
@@ -119,7 +131,7 @@ with tabs[1]:
     if uploaded_file:
         image = Image.open(uploaded_file)
         st.image(image, caption="Uploaded Image", width=preview_size)
-        decoded_data = decode_qr_code(image)
+        decoded_data = decode_qr_code_with_api(image)
         if isinstance(decoded_data, list):
             st.success("Decoded Data:")
             for i, data in enumerate(decoded_data, 1):
